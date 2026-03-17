@@ -1,26 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Contact Us</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — MAISON</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .page-header { margin-top: 80px; background: var(--dark); color: white; padding: 5rem 4rem; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; }
+    .breadcrumb { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 0.5rem; }
+    .breadcrumb a { color: var(--gold); text-decoration: none; }
+
+    .contact-layout {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      max-width: 1200px; margin: 0 auto;
+      padding: 5rem 4rem 7rem; gap: 5rem;
+    }
+
+    /* LEFT: INFO */
+    .contact-info {}
+    .contact-info .section-title { margin-bottom: 1rem; }
+    .contact-info > p { color: var(--warm-gray); line-height: 1.8; margin-bottom: 3rem; font-size: 0.95rem; }
+
+    .info-cards { display: flex; flex-direction: column; gap: 1.5rem; }
+    .info-card {
+      display: flex; gap: 1.2rem; align-items: flex-start;
+      padding: 1.5rem; background: white;
+      border-left: 3px solid transparent;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .info-card:hover { border-color: var(--gold); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+    .info-icon {
+      width: 44px; height: 44px; background: var(--light-gray);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: var(--gold); flex-shrink: 0;
+    }
+    .info-card h4 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .info-card p { font-size: 0.875rem; color: var(--warm-gray); line-height: 1.6; }
+    .info-card a { color: var(--dark); text-decoration: none; font-weight: 500; }
+    .info-card a:hover { color: var(--gold); }
+
+    .social-section { margin-top: 2.5rem; }
+    .social-section h4 { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
+    .social-icons { display: flex; gap: 0.75rem; }
+    .social-icon {
+      width: 42px; height: 42px; background: var(--dark); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .social-icon:hover { background: var(--gold); }
+
+    /* RIGHT: FORM */
+    .contact-form-wrap { }
+    .form-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .form-subtitle { color: var(--warm-gray); font-size: 0.9rem; margin-bottom: 2.5rem; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: span 2; }
+    .form-group label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-gray); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--light-gray);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      background: white; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--dark); }
+    .form-group textarea { resize: vertical; min-height: 140px; }
+    .form-note { font-size: 0.8rem; color: var(--warm-gray); margin-top: 1rem; }
+    .form-submit { margin-top: 1.5rem; }
+
+    /* FAQ STRIP */
+    .faq-section { background: var(--light-gray); padding: 5rem 4rem; }
+    .faq-inner { max-width: 800px; margin: 0 auto; }
+    .faq-header { text-align: center; margin-bottom: 3rem; }
+    .faq-header p { color: var(--warm-gray); margin-top: 0.5rem; }
+    .faq-item {
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .faq-q {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.3rem 0; cursor: pointer;
+      font-weight: 600; font-size: 0.95rem;
+    }
+    .faq-q i { transition: transform 0.3s; color: var(--gold); }
+    .faq-item.open .faq-q i { transform: rotate(180deg); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      font-size: 0.9rem; color: var(--warm-gray); line-height: 1.7;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 1.2rem; }
+
+    @media (max-width: 900px) {
+      .contact-layout { grid-template-columns: 1fr; gap: 3rem; padding: 3rem 2rem 5rem; }
+      .page-header { padding: 3rem 2rem; }
+      .faq-section { padding: 3rem 2rem; }
+    }
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: span 1; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Contact Our Support Team</h1>
-    <p>Have questions? Fill out the form below.</p>
 
-    <form>
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">MAISON<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Shop</a></li>
+    <li><a href="product-detail.html">Products</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon"><i class="fa fa-search"></i></button>
+    <button class="nav-icon"><i class="fa fa-heart"></i></button>
+    <button class="nav-icon" onclick="window.location='cart.html'"><i class="fa fa-shopping-bag"></i><span class="cart-badge">3</span></button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
 
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+<div class="page-header">
+  <div class="breadcrumb"><a href="index.html">Home</a> / Contact</div>
+  <h1>Get in Touch</h1>
+</div>
 
-        <label for="message">Message:</label><br>
-        <textarea id="message" name="message" rows="4"></textarea><br><br>
+<div class="contact-layout">
+  <!-- LEFT -->
+  <div class="contact-info">
+    <span class="section-label">Contact Info</span>
+    <h2 class="section-title">We'd Love to Hear from You</h2>
+    <p>Whether you have a question about a product, need help with an order, or simply want to say hello — we're here and happy to help.</p>
 
-        <input type="submit" value="Send Message">
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-icon"><i class="fa fa-map-marker-alt"></i></div>
+        <div>
+          <h4>Visit Us</h4>
+          <p>14 Rue des Artisans<br>Lyon, France 69001</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="fa fa-envelope"></i></div>
+        <div>
+          <h4>Email Us</h4>
+          <p><a href="mailto:hello@maison.com">hello@maison.com</a><br>We reply within 24 hours.</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="fa fa-phone"></i></div>
+        <div>
+          <h4>Call Us</h4>
+          <p><a href="tel:+33123456789">+33 1 23 45 67 89</a><br>Mon–Fri, 9am–6pm CET</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="fa fa-clock"></i></div>
+        <div>
+          <h4>Store Hours</h4>
+          <p>Mon–Sat: 10am–7pm<br>Sunday: 12pm–5pm</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="social-section">
+      <h4>Follow Us</h4>
+      <div class="social-icons">
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="contact-form-wrap">
+    <div class="form-title">Send Us a Message</div>
+    <div class="form-subtitle">Fill out the form below and we'll get back to you as soon as possible.</div>
+    <form onsubmit="handleSubmit(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" placeholder="Jane" required />
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" placeholder="Smith" required />
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" placeholder="jane@email.com" required />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" placeholder="+1 (555) 000-0000" />
+        </div>
+        <div class="form-group full">
+          <label>Subject *</label>
+          <select required>
+            <option value="">Select a topic…</option>
+            <option>Order Inquiry</option>
+            <option>Product Question</option>
+            <option>Returns & Exchanges</option>
+            <option>Wholesale Inquiry</option>
+            <option>Press & Media</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Order Number (if applicable)</label>
+          <input type="text" placeholder="e.g. MSN-2024-00123" />
+        </div>
+        <div class="form-group full">
+          <label>Message *</label>
+          <textarea placeholder="Tell us how we can help…" required></textarea>
+        </div>
+      </div>
+      <p class="form-note">* Required fields. We respect your privacy and will never share your information.</p>
+      <div class="form-submit">
+        <button type="submit" class="btn-primary"><span>Send Message</span> <i class="fa fa-paper-plane"></i></button>
+      </div>
     </form>
-    
-    <br>
-    <a href="index.html">Return Home</a>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title">Common Questions</h2>
+      <p>Quick answers to the questions we hear most often.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How long does shipping take? <i class="fa fa-chevron-down"></i></div>
+      <div class="faq-a">Standard shipping takes 3–5 business days within the US. Express shipping (1–2 business days) is available at checkout. International orders vary by destination, typically 7–14 days.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What is your return policy? <i class="fa fa-chevron-down"></i></div>
+      <div class="faq-a">We offer free returns within 30 days of delivery. Items must be in their original condition with all packaging. Simply email us or start a return through your account dashboard, and we'll provide a prepaid label.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do you offer a warranty? <i class="fa fa-chevron-down"></i></div>
+      <div class="faq-a">Yes. Every MAISON product comes with our Lifetime Craftsmanship Warranty. If a product fails due to a manufacturing defect, we will repair or replace it free of charge, for life.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do you ship internationally? <i class="fa fa-chevron-down"></i></div>
+      <div class="faq-a">Yes — we ship to over 40 countries worldwide. International orders may be subject to local import duties and taxes, which are the responsibility of the recipient.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I visit your showroom? <i class="fa fa-chevron-down"></i></div>
+      <div class="faq-a">Absolutely. Our Lyon showroom is open Monday through Saturday, 10am–7pm, and Sunday 12–5pm. We recommend booking an appointment for a dedicated consultation by emailing hello@maison.com.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><a href="index.html" class="nav-logo">MAISON<span>.</span></a><p>Artisan home goods crafted with intention.</p></div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="products.html">All Products</a></li><li><a href="#">New Arrivals</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Help</h4><ul><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 MAISON. All rights reserved.</span><div class="social-links"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-pinterest"></i></a></div></div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const toast = document.getElementById('toast');
+    toast.textContent = '✓ Message sent! We\'ll reply within 24 hours.';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+    e.target.reset();
+  }
+</script>
 </body>
 </html>
