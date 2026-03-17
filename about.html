@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Story — MAISON</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .about-hero {
+      margin-top: 80px; min-height: 80vh;
+      position: relative; display: flex; align-items: center; overflow: hidden;
+    }
+    .about-hero-bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1567225557594-88d73e55f2cb?w=1600&q=80') center/cover;
+    }
+    .about-hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(26,20,16,0.85) 50%, transparent 100%);
+    }
+    .about-hero-content {
+      position: relative; z-index: 1;
+      padding: 6rem;
+      max-width: 600px; color: white;
+    }
+    .about-hero-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 900; line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+    .about-hero-content p { color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 1.05rem; }
+
+    /* STORY */
+    .story-section {
+      padding: 7rem 4rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
+      max-width: 1300px; margin: 0 auto;
+    }
+    .story-text .section-title { margin-bottom: 1.5rem; }
+    .story-text p { color: var(--warm-gray); line-height: 1.85; margin-bottom: 1.2rem; font-size: 0.97rem; }
+    .story-quote {
+      border-left: 3px solid var(--gold);
+      padding-left: 1.5rem; margin: 2rem 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-style: italic; color: var(--dark);
+      line-height: 1.6;
+    }
+    .story-img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .story-img-grid img { width: 100%; object-fit: cover; display: block; }
+    .story-img-grid img:first-child { grid-column: span 2; aspect-ratio: 16/9; }
+    .story-img-grid img:not(:first-child) { aspect-ratio: 1; }
+
+    /* VALUES */
+    .values-section {
+      background: var(--dark); padding: 7rem 4rem;
+    }
+    .values-header { text-align: center; margin-bottom: 4rem; }
+    .values-header .section-title { color: white; }
+    .values-header p { color: rgba(255,255,255,0.6); max-width: 500px; margin: 0.75rem auto 0; line-height: 1.7; }
+    .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; max-width: 1100px; margin: 0 auto; }
+    .value-card { text-align: center; padding: 2rem 1rem; }
+    .value-icon {
+      width: 60px; height: 60px; background: rgba(201,151,58,0.15);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; color: var(--gold); margin: 0 auto 1.2rem;
+    }
+    .value-title { font-family: 'Playfair Display', serif; color: white; font-size: 1.1rem; margin-bottom: 0.7rem; }
+    .value-desc { color: rgba(255,255,255,0.5); font-size: 0.875rem; line-height: 1.7; }
+
+    /* TEAM */
+    .team-section { padding: 7rem 4rem; max-width: 1300px; margin: 0 auto; }
+    .team-header { text-align: center; margin-bottom: 4rem; }
+    .team-header p { color: var(--warm-gray); max-width: 500px; margin: 0.75rem auto 0; line-height: 1.7; }
+    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5rem; }
+    .team-card img {
+      width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
+      filter: grayscale(30%); transition: filter 0.3s;
+    }
+    .team-card:hover img { filter: grayscale(0%); }
+    .team-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-top: 1rem; }
+    .team-role { font-size: 0.8rem; color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .team-bio { font-size: 0.85rem; color: var(--warm-gray); line-height: 1.6; }
+
+    /* STATS */
+    .stats-bar {
+      background: var(--light-gray); padding: 4rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      text-align: center; gap: 2rem;
+    }
+    .stat-item {}
+    .stat-n { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--dark); }
+    .stat-l { font-size: 0.82rem; color: var(--warm-gray); letter-spacing: 0.08em; margin-top: 0.3rem; }
+
+    @media (max-width: 1000px) {
+      .story-section { grid-template-columns: 1fr; gap: 3rem; }
+      .values-grid, .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .about-hero-content { padding: 3rem 2rem; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .story-section, .values-section, .team-section { padding: 4rem 2rem; }
+      .stats-bar { padding: 3rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">MAISON<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Shop</a></li>
+    <li><a href="product-detail.html">Products</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon"><i class="fa fa-search"></i></button>
+    <button class="nav-icon"><i class="fa fa-heart"></i></button>
+    <button class="nav-icon" onclick="window.location='cart.html'"><i class="fa fa-shopping-bag"></i><span class="cart-badge">3</span></button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<section class="about-hero">
+  <div class="about-hero-bg"></div>
+  <div class="about-hero-content">
+    <span class="section-label">Our Story</span>
+    <h1>Made with Hands. Lived with Love.</h1>
+    <p>Since 2007, MAISON has worked with artisan makers worldwide to bring quietly extraordinary objects into everyday homes.</p>
+  </div>
+</section>
+
+<section class="story-section">
+  <div class="story-text">
+    <span class="section-label">Who We Are</span>
+    <h2 class="section-title">Eighteen Years of Thoughtful Making</h2>
+    <p>MAISON was founded in 2007 by Clara and Michel Beaumont, two architects who believed the objects we live with shape how we feel at home. Frustrated by mass-produced furniture that looked fine but felt empty, they began sourcing directly from small workshops across Europe and Japan.</p>
+    <p>What started as a small showroom in Lyon grew into a global community of more than 300 artisan makers, united by a shared commitment: make things well, make them honestly, and make them to last.</p>
+    <blockquote class="story-quote">"A well-made object is a quiet act of resistance against the disposable. It says: this matters, and so do you."<br><cite style="font-size:0.8rem; font-style:normal; margin-top:0.5rem; display:block; color:var(--warm-gray);">— Clara Beaumont, Co-Founder</cite></blockquote>
+    <p>Today, every product in our collection is personally vetted by our team. We visit every workshop, know every maker by name, and stand behind every piece with our lifetime craftsmanship warranty.</p>
+    <a href="products.html" class="btn-primary" style="margin-top:0.5rem;"><span>Explore Our Collection</span> <i class="fa fa-arrow-right"></i></a>
+  </div>
+  <div class="story-img-grid">
+    <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Our workshop" />
+    <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=400&q=80" alt="Artisan at work" />
+    <img src="https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=400&q=80" alt="Products" />
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-n">18</div><div class="stat-l">Years of Craftsmanship</div></div>
+  <div class="stat-item"><div class="stat-n">300+</div><div class="stat-l">Artisan Partners</div></div>
+  <div class="stat-item"><div class="stat-n">42k</div><div class="stat-l">Happy Customers</div></div>
+  <div class="stat-item"><div class="stat-n">1,200</div><div class="stat-l">Handcrafted Products</div></div>
+</div>
+
+<!-- VALUES -->
+<section class="values-section">
+  <div class="values-header">
+    <span class="section-label">What We Believe</span>
+    <h2 class="section-title">Our Values</h2>
+    <p>Every decision we make is guided by a simple set of principles.</p>
+  </div>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon"><i class="fa fa-leaf"></i></div>
+      <div class="value-title">Sustainability</div>
+      <div class="value-desc">We source only from makers who use sustainable or reclaimed materials and ethical labor practices.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon"><i class="fa fa-hands"></i></div>
+      <div class="value-title">Craftsmanship</div>
+      <div class="value-desc">Every piece is touched by human hands. We believe skilled making is a form of respect for materials.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon"><i class="fa fa-heart"></i></div>
+      <div class="value-title">Fair Trade</div>
+      <div class="value-desc">We pay artisans fairly and build long-term relationships — not transactional supplier agreements.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon"><i class="fa fa-infinity"></i></div>
+      <div class="value-title">Longevity</div>
+      <div class="value-desc">We only sell things built to last. If something breaks through no fault of your own, we'll fix it. Always.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+  <div class="team-header">
+    <span class="section-label">The People</span>
+    <h2 class="section-title">Meet the Team</h2>
+    <p>A small, passionate group of designers, makers, and dreamers.</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card">
+      <img src="https://i.pravatar.cc/400?img=47" alt="Clara Beaumont" />
+      <div class="team-role">Co-Founder & Creative Director</div>
+      <div class="team-name">Clara Beaumont</div>
+      <div class="team-bio">Architect turned maker. Clara oversees every collection with an eye trained on beauty, material, and meaning.</div>
+    </div>
+    <div class="team-card">
+      <img src="https://i.pravatar.cc/400?img=11" alt="Michel Beaumont" />
+      <div class="team-role">Co-Founder & Operations</div>
+      <div class="team-name">Michel Beaumont</div>
+      <div class="team-bio">Ex-furniture restorer. Michel personally visits each workshop partner and ensures our supply chain stays honest.</div>
+    </div>
+    <div class="team-card">
+      <img src="https://i.pravatar.cc/400?img=25" alt="Hana Yoshi" />
+      <div class="team-role">Head of Product</div>
+      <div class="team-name">Hana Yoshida</div>
+      <div class="team-bio">Trained in Kyoto's traditional craft workshops. Hana curates our Japanese collection with deep cultural respect.</div>
+    </div>
+    <div class="team-card">
+      <img src="https://i.pravatar.cc/400?img=33" alt="Tom Ellis" />
+      <div class="team-role">Lead Designer</div>
+      <div class="team-name">Tom Ellis</div>
+      <div class="team-bio">Tom translates timeless references into contemporary pieces that feel instantly familiar yet entirely new.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><a href="index.html" class="nav-logo">MAISON<span>.</span></a><p>Artisan home goods crafted with intention.</p></div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="products.html">All Products</a></li><li><a href="#">New Arrivals</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Help</h4><ul><li><a href="#">Shipping</a></li><li><a href="#">FAQ</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 MAISON. All rights reserved.</span><div class="social-links"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-pinterest"></i></a></div></div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+</script>
+</body>
+</html>
