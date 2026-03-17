@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — MAISON</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .checkout-header {
+      margin-top: 80px; background: var(--dark);
+      padding: 2rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .checkout-steps {
+      display: flex; gap: 0; align-items: center;
+    }
+    .step { display: flex; align-items: center; gap: 0.6rem; padding: 0 1.5rem; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+    .step.active { color: var(--gold); }
+    .step.done { color: rgba(255,255,255,0.6); }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+    .step.done .step-num { background: var(--gold); border-color: var(--gold); color: white; }
+    .step-sep { width: 40px; height: 1px; background: rgba(255,255,255,0.15); }
+
+    .checkout-layout {
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 3rem; padding: 3rem 4rem 6rem; max-width: 1300px; margin: 0 auto;
+    }
+
+    .checkout-form {}
+    .checkout-section { margin-bottom: 2.5rem; }
+    .section-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem; border-bottom: 1px solid var(--light-gray);
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .section-heading i { color: var(--gold); font-size: 1rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-row.full { grid-template-columns: 1fr; }
+    .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-gray); }
+    .form-group input, .form-group select {
+      padding: 0.8rem 1rem; border: 2px solid var(--light-gray);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      background: white; outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--dark); }
+
+    .shipping-options { display: flex; flex-direction: column; gap: 0.75rem; }
+    .shipping-option {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem; border: 2px solid var(--light-gray);
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .shipping-option:hover, .shipping-option.selected { border-color: var(--dark); }
+    .shipping-option input[type="radio"] { accent-color: var(--dark); width: 16px; height: 16px; }
+    .ship-info { flex: 1; }
+    .ship-name { font-weight: 600; font-size: 0.9rem; }
+    .ship-time { font-size: 0.78rem; color: var(--warm-gray); }
+    .ship-price { font-weight: 700; font-size: 0.95rem; }
+
+    .payment-methods { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .pay-method {
+      flex: 1; padding: 0.75rem 1rem;
+      border: 2px solid var(--light-gray); cursor: pointer;
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.85rem; font-weight: 500; transition: border-color 0.2s;
+    }
+    .pay-method.selected { border-color: var(--dark); }
+    .pay-method i { font-size: 1.1rem; }
+    .card-icons { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+    .card-icon { font-size: 1.8rem; color: var(--warm-gray); }
+
+    /* ORDER SUMMARY */
+    .order-summary { background: var(--dark); color: white; padding: 2rem; align-self: flex-start; position: sticky; top: 90px; }
+    .summary-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; }
+    .summary-item { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.2rem; }
+    .summary-item-img { width: 56px; height: 56px; object-fit: cover; background: #333; flex-shrink: 0; position: relative; }
+    .item-qty-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--warm-gray); color: white;
+      width: 18px; height: 18px; border-radius: 50%;
+      font-size: 0.65rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .summary-item-info { flex: 1; }
+    .summary-item-name { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .summary-item-sub { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+    .summary-item-price { font-size: 0.9rem; font-weight: 600; }
+    .summary-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 1.2rem 0; }
+    .summary-line { display: flex; justify-content: space-between; font-size: 0.875rem; padding: 0.4rem 0; color: rgba(255,255,255,0.65); }
+    .summary-line.total { font-size: 1.05rem; font-weight: 700; color: white; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.15); margin-top: 0.4rem; }
+    .place-order-btn {
+      width: 100%; padding: 1rem; background: var(--gold); color: white;
+      border: none; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+      margin-top: 1.5rem;
+    }
+    .place-order-btn:hover { background: #b8851f; }
+    .secure-note { display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 1rem; font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+
+    @media (max-width: 1000px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+    @media (max-width: 700px) {
+      .checkout-header { padding: 1.5rem; flex-direction: column; gap: 1rem; }
+      .checkout-layout { padding: 2rem 1.5rem 4rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-row.three { grid-template-columns: 1fr 1fr; }
+      .payment-methods { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar" style="position:static; backdrop-filter:none; background: var(--dark);">
+  <a href="index.html" class="nav-logo" style="color:white;">MAISON<span>.</span></a>
+  <div style="color:rgba(255,255,255,0.5); font-size:0.8rem; display:flex; align-items:center; gap:0.4rem;">
+    <i class="fa fa-lock" style="color:var(--gold)"></i> Secure Checkout
+  </div>
+</nav>
+
+<div class="checkout-header">
+  <a href="index.html" class="nav-logo" style="color:white; font-size:1.2rem;">MAISON<span style="color:var(--gold)">.</span></a>
+  <div class="checkout-steps">
+    <div class="step done"><div class="step-num"><i class="fa fa-check"></i></div> Cart</div>
+    <div class="step-sep"></div>
+    <div class="step active"><div class="step-num">2</div> Checkout</div>
+    <div class="step-sep"></div>
+    <div class="step"><div class="step-num">3</div> Confirmation</div>
+  </div>
+</div>
+
+<div class="checkout-layout">
+  <!-- FORM -->
+  <form class="checkout-form" onsubmit="handleOrder(event)">
+
+    <!-- CONTACT -->
+    <div class="checkout-section">
+      <div class="section-heading"><i class="fa fa-user"></i> Contact Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name *</label><input type="text" placeholder="Jane" required /></div>
+        <div class="form-group"><label>Last Name *</label><input type="text" placeholder="Smith" required /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Email *</label><input type="email" placeholder="jane@email.com" required /></div>
+        <div class="form-group"><label>Phone</label><input type="tel" placeholder="+1 (555) 000-0000" /></div>
+      </div>
+    </div>
+
+    <!-- SHIPPING ADDRESS -->
+    <div class="checkout-section">
+      <div class="section-heading"><i class="fa fa-map-marker-alt"></i> Shipping Address</div>
+      <div class="form-row full">
+        <div class="form-group"><label>Address *</label><input type="text" placeholder="123 Elm Street, Apt 4B" required /></div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group"><label>City *</label><input type="text" placeholder="New York" required /></div>
+        <div class="form-group"><label>State</label><input type="text" placeholder="NY" /></div>
+        <div class="form-group"><label>ZIP Code *</label><input type="text" placeholder="10001" required /></div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Country *</label>
+          <select required>
+            <option>United States</option><option>Canada</option><option>United Kingdom</option>
+            <option>France</option><option>Germany</option><option>Australia</option>
+            <option>Japan</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHIPPING METHOD -->
+    <div class="checkout-section">
+      <div class="section-heading"><i class="fa fa-truck"></i> Shipping Method</div>
+      <div class="shipping-options">
+        <label class="shipping-option selected">
+          <input type="radio" name="shipping" value="standard" checked />
+          <div class="ship-info"><div class="ship-name">Standard Shipping</div><div class="ship-time">3–5 business days</div></div>
+          <span class="ship-price" style="color:#6B8F71">Free</span>
+        </label>
+        <label class="shipping-option">
+          <input type="radio" name="shipping" value="express" />
+          <div class="ship-info"><div class="ship-name">Express Shipping</div><div class="ship-time">1–2 business days</div></div>
+          <span class="ship-price">$14.99</span>
+        </label>
+        <label class="shipping-option">
+          <input type="radio" name="shipping" value="overnight" />
+          <div class="ship-info"><div class="ship-name">Overnight</div><div class="ship-time">Next business day</div></div>
+          <span class="ship-price">$29.99</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="checkout-section">
+      <div class="section-heading"><i class="fa fa-credit-card"></i> Payment</div>
+      <div class="payment-methods">
+        <label class="pay-method selected" id="pm-card" onclick="selectPay('card')">
+          <input type="radio" name="pay" value="card" checked hidden /> <i class="fa fa-credit-card"></i> Card
+        </label>
+        <label class="pay-method" id="pm-paypal" onclick="selectPay('paypal')">
+          <input type="radio" name="pay" value="paypal" hidden /> <i class="fab fa-paypal"></i> PayPal
+        </label>
+        <label class="pay-method" id="pm-apple" onclick="selectPay('apple')">
+          <input type="radio" name="pay" value="apple" hidden /> <i class="fab fa-apple"></i> Apple Pay
+        </label>
+      </div>
+      <div class="card-icons">
+        <i class="fab fa-cc-visa card-icon"></i>
+        <i class="fab fa-cc-mastercard card-icon"></i>
+        <i class="fab fa-cc-amex card-icon"></i>
+        <i class="fab fa-cc-discover card-icon"></i>
+      </div>
+      <div id="card-fields">
+        <div class="form-row full"><div class="form-group"><label>Card Number *</label><input type="text" placeholder="1234 5678 9012 3456" maxlength="19" /></div></div>
+        <div class="form-row">
+          <div class="form-group"><label>Expiry *</label><input type="text" placeholder="MM / YY" maxlength="7" /></div>
+          <div class="form-group"><label>CVV *</label><input type="text" placeholder="123" maxlength="4" /></div>
+        </div>
+        <div class="form-row full"><div class="form-group"><label>Name on Card *</label><input type="text" placeholder="Jane Smith" /></div></div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:1.1rem; font-size:0.95rem;">
+      <span>Place Order — $660.96</span> <i class="fa fa-lock"></i>
+    </button>
+    <p style="font-size:0.78rem; color:var(--warm-gray); margin-top:1rem; text-align:center; line-height:1.6;">
+      By placing your order you agree to our <a href="#" style="color:var(--dark)">Terms of Service</a> and <a href="#" style="color:var(--dark)">Privacy Policy</a>.
+    </p>
+  </form>
+
+  <!-- ORDER SUMMARY -->
+  <div class="order-summary">
+    <div class="summary-title">Order Summary</div>
+
+    <div class="summary-item">
+      <div class="summary-item-img" style="position:relative">
+        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=120&q=80" alt="Table" style="width:56px;height:56px;object-fit:cover" />
+        <span class="item-qty-badge">1</span>
+      </div>
+      <div class="summary-item-info">
+        <div class="summary-item-name">Walnut Side Table</div>
+        <div class="summary-item-sub">22" Square · Dark Walnut</div>
+      </div>
+      <div class="summary-item-price">$289.00</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-item-img" style="position:relative">
+        <img src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=120&q=80" alt="Vase" style="width:56px;height:56px;object-fit:cover" />
+        <span class="item-qty-badge">2</span>
+      </div>
+      <div class="summary-item-info">
+        <div class="summary-item-name">Ceramic Vase Set</div>
+        <div class="summary-item-sub">Matte White · Set of 3</div>
+      </div>
+      <div class="summary-item-price">$178.00</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-item-img" style="position:relative">
+        <img src="https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=120&q=80" alt="Throw" style="width:56px;height:56px;object-fit:cover" />
+        <span class="item-qty-badge">1</span>
+      </div>
+      <div class="summary-item-info">
+        <div class="summary-item-name">Belgian Linen Throw</div>
+        <div class="summary-item-sub">Natural · 50"×70"</div>
+      </div>
+      <div class="summary-item-price">$145.00</div>
+    </div>
+
+    <hr class="summary-divider" />
+    <div class="summary-line"><span>Subtotal</span><span>$612.00</span></div>
+    <div class="summary-line"><span>Shipping</span><span style="color:#6B8F71">Free</span></div>
+    <div class="summary-line"><span>Tax (8%)</span><span>$48.96</span></div>
+    <div class="summary-line total"><span>Total</span><span>$660.96</span></div>
+
+    <button class="place-order-btn" type="button" onclick="document.querySelector('form').dispatchEvent(new Event('submit',{cancelable:true}))">
+      Place Order <i class="fa fa-arrow-right"></i>
+    </button>
+    <div class="secure-note"><i class="fa fa-lock"></i> SSL encrypted · Secure payment</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function selectPay(method) {
+    document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+    document.getElementById('pm-' + method).classList.add('selected');
+    document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
+  }
+
+  document.querySelectorAll('.shipping-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.shipping-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+
+  function handleOrder(e) {
+    e.preventDefault();
+    const toast = document.getElementById('toast');
+    toast.textContent = '✓ Order placed! Redirecting to confirmation…';
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+      window.location.href = 'index.html';
+    }, 2500);
+  }
+</script>
+</body>
+</html>
