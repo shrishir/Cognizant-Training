@@ -1,32 +1,600 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>My Simple Shop | Home</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON — Artisan Home Goods</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding-top: 80px;
+    }
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 6rem 4rem 6rem 6rem;
+      position: relative;
+    }
+    .hero-left::before {
+      content: 'MAISON';
+      position: absolute; top: 50%; left: -2rem;
+      transform: translateY(-50%) rotate(-90deg);
+      font-family: 'Playfair Display', serif;
+      font-size: 9rem; font-weight: 900;
+      color: rgba(139,94,60,0.06);
+      letter-spacing: 0.1em; white-space: nowrap;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow span { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+    .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 5vw, 5rem);
+      font-weight: 900; line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em { color: var(--brown); font-style: italic; }
+    .hero p {
+      color: var(--warm-gray); line-height: 1.75;
+      max-width: 380px; font-size: 1.05rem;
+      margin-bottom: 2.5rem;
+    }
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .hero-stats {
+      display: flex; gap: 2.5rem;
+      margin-top: 4rem; padding-top: 2rem;
+      border-top: 1px solid var(--light-gray);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700; color: var(--dark);
+    }
+    .stat-label { font-size: 0.78rem; color: var(--warm-gray); letter-spacing: 0.05em; }
+
+    .hero-right {
+      position: relative; overflow: hidden;
+      background: var(--light-gray);
+    }
+    .hero-img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 8s ease;
+    }
+    .hero-right:hover .hero-img { transform: scale(1.04); }
+    .hero-tag {
+      position: absolute; bottom: 3rem; left: -1.5rem;
+      background: white; padding: 1rem 1.5rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+      display: flex; gap: 1rem; align-items: center;
+      min-width: 200px;
+    }
+    .tag-icon { font-size: 1.5rem; color: var(--gold); }
+    .tag-text { font-size: 0.8rem; font-weight: 500; }
+    .tag-text strong { display: block; font-size: 0.95rem; color: var(--dark); }
+
+    /* ── MARQUEE ── */
+    .marquee-bar {
+      background: var(--dark); padding: 1rem 0;
+      overflow: hidden; white-space: nowrap;
+    }
+    .marquee-inner {
+      display: inline-flex; animation: marquee 22s linear infinite;
+    }
+    .marquee-item {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      padding: 0 2rem;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(255,255,255,0.7);
+    }
+    .marquee-dot { color: var(--gold); font-size: 0.5rem; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── CATEGORIES ── */
+    .categories { padding: 6rem 4rem; }
+    .categories-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 3rem;
+    }
+    .cat-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .cat-card {
+      position: relative; overflow: hidden; cursor: pointer;
+      text-decoration: none; display: block;
+    }
+    .cat-card img {
+      width: 100%; aspect-ratio: 3/4;
+      object-fit: cover; display: block;
+      transition: transform 0.5s ease;
+    }
+    .cat-card:hover img { transform: scale(1.06); }
+    .cat-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(26,20,16,0.7) 0%, transparent 60%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 1.5rem;
+    }
+    .cat-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: white; font-weight: 700;
+    }
+    .cat-count { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+    .cat-arrow {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 36px; height: 36px; background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.8rem;
+      transform: scale(0); transition: transform 0.3s;
+    }
+    .cat-card:hover .cat-arrow { transform: scale(1); }
+
+    /* ── FEATURED PRODUCTS ── */
+    .featured { padding: 2rem 4rem 6rem; }
+    .feat-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 3rem;
+    }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    .product-card {
+      cursor: pointer; text-decoration: none; color: inherit;
+      display: block;
+    }
+    .product-img-wrap {
+      position: relative; overflow: hidden;
+      background: var(--light-gray); margin-bottom: 1.2rem;
+    }
+    .product-img-wrap img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover; display: block;
+      transition: transform 0.5s;
+    }
+    .product-card:hover .product-img-wrap img { transform: scale(1.05); }
+    .product-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      background: var(--accent); color: white;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 0.3rem 0.7rem;
+    }
+    .product-actions {
+      position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%) translateY(60px);
+      display: flex; gap: 0.5rem;
+      transition: transform 0.3s;
+      white-space: nowrap;
+    }
+    .product-card:hover .product-actions { transform: translateX(-50%) translateY(0); }
+    .pa-btn {
+      background: white; border: none; cursor: pointer;
+      padding: 0.5rem 0.9rem; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .pa-btn:hover { background: var(--dark); color: white; }
+    .pa-icon { background: white; border: none; cursor: pointer; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s; }
+    .pa-icon:hover { background: var(--dark); color: white; }
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 600; margin-bottom: 0.3rem;
+    }
+    .product-sub { font-size: 0.82rem; color: var(--warm-gray); margin-bottom: 0.5rem; }
+    .product-price { font-weight: 600; font-size: 1rem; color: var(--dark); }
+    .product-price .old { text-decoration: line-through; color: var(--warm-gray); font-weight: 400; margin-right: 0.5rem; }
+    .stars { color: var(--gold); font-size: 0.75rem; margin-bottom: 0.3rem; }
+
+    /* ── PROMO BANNER ── */
+    .promo-banner {
+      margin: 0 4rem;
+      background: var(--dark);
+      display: grid; grid-template-columns: 1fr 1fr;
+      overflow: hidden; position: relative;
+    }
+    .promo-left {
+      padding: 5rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .promo-left .section-label { color: var(--gold); }
+    .promo-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      color: white; margin-bottom: 1rem;
+    }
+    .promo-left p { color: rgba(255,255,255,0.6); margin-bottom: 2rem; line-height: 1.7; }
+    .promo-right { position: relative; min-height: 400px; }
+    .promo-right img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+    .promo-code {
+      position: absolute; top: 2rem; right: 2rem;
+      background: var(--gold); color: white;
+      padding: 1rem 1.5rem; font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .promo-code span { display: block; font-size: 1.4rem; letter-spacing: 0.05em; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { padding: 6rem 4rem; text-align: center; }
+    .testimonials .section-title { margin-bottom: 0.5rem; }
+    .testimonials > p { color: var(--warm-gray); margin-bottom: 3rem; }
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .testi-card {
+      background: white; padding: 2.5rem;
+      text-align: left; border-bottom: 3px solid transparent;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .testi-card:hover { border-color: var(--gold); box-shadow: 0 12px 40px rgba(0,0,0,0.07); }
+    .testi-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; }
+    .testi-text { font-size: 0.95rem; line-height: 1.75; color: var(--warm-gray); margin-bottom: 1.5rem; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 1rem; }
+    .testi-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--light-gray); object-fit: cover;
+    }
+    .testi-name { font-weight: 600; font-size: 0.9rem; }
+    .testi-role { font-size: 0.78rem; color: var(--warm-gray); }
+
+    /* ── NEWSLETTER ── */
+    .newsletter {
+      background: var(--light-gray);
+      padding: 5rem 4rem; text-align: center;
+    }
+    .newsletter-inner { max-width: 560px; margin: 0 auto; }
+    .newsletter h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 0.75rem; }
+    .newsletter p { color: var(--warm-gray); margin-bottom: 2rem; line-height: 1.7; }
+    .newsletter-form { display: flex; gap: 0; max-width: 440px; margin: 0 auto; }
+    .newsletter-form input {
+      flex: 1; padding: 0.9rem 1.4rem;
+      border: 2px solid var(--dark); border-right: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      background: white; outline: none;
+    }
+    .newsletter-form input:focus { border-color: var(--gold); }
+
+    @media (max-width: 1100px) {
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { min-height: 50vw; }
+      .hero-left { padding: 5rem 2rem 3rem; }
+      .categories, .featured, .testimonials, .newsletter { padding-left: 2rem; padding-right: 2rem; }
+      .promo-banner { margin: 0 2rem; grid-template-columns: 1fr; }
+      .promo-left { padding: 3rem 2rem; }
+      .testi-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .cat-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+      .products-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .categories, .featured { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-form input { border-right: 2px solid var(--dark); }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Retro Gadgets</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="products.html">All Products</a></li>
-                <li><a href="contact.html">Contact Us</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <main>
-        <section>
-            <h2>Featured Collection</h2>
-            <p>Quality electronics delivered to your door.</p>
-            <img src="https://via.placeholder.com/300" alt="Featured Product">
-            <p>Check out our latest arrivals!</p>
-            <a href="products.html">Shop Now</a>
-        </section>
-    </main>
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">MAISON<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="products.html">Shop</a></li>
+    <li><a href="product-detail.html">Products</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon"><i class="fa fa-search"></i></button>
+    <button class="nav-icon"><i class="fa fa-heart"></i></button>
+    <button class="nav-icon" onclick="window.location='cart.html'">
+      <i class="fa fa-shopping-bag"></i>
+      <span class="cart-badge">3</span>
+    </button>
+  </div>
+  <button class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-    <footer>
-        <p>&copy; 2026 Retro Gadgets Inc.</p>
-    </footer>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow"><span>New Collection 2025</span></div>
+    <h1>Crafted for <em>Thoughtful</em> Living</h1>
+    <p>Discover artisan home goods made with intention — each piece a quiet act of beauty for your everyday space.</p>
+    <div class="hero-ctas">
+      <a href="products.html" class="btn-primary"><span>Shop Collection</span> <i class="fa fa-arrow-right"></i></a>
+      <a href="about.html" class="btn-outline">Our Story</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">1,200+</div><div class="stat-label">Artisan Products</div></div>
+      <div><div class="stat-num">42k</div><div class="stat-label">Happy Customers</div></div>
+      <div><div class="stat-num">18yr</div><div class="stat-label">Of Craftsmanship</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=80" alt="Beautiful home interior" class="hero-img" />
+    <div class="hero-tag">
+      <div class="tag-icon"><i class="fa fa-leaf"></i></div>
+      <div class="tag-text"><strong>100% Sustainable</strong>Ethically sourced materials</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-inner">
+    <span class="marquee-item">Free Shipping Over $75 <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">Handcrafted Goods <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">30-Day Returns <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">Sustainable Materials <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">New Arrivals Weekly <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">Artisan Quality <span class="marquee-dot">●</span></span>
+    <!-- duplicate for seamless loop -->
+    <span class="marquee-item">Free Shipping Over $75 <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">Handcrafted Goods <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">30-Day Returns <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">Sustainable Materials <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">New Arrivals Weekly <span class="marquee-dot">●</span></span>
+    <span class="marquee-item">Artisan Quality <span class="marquee-dot">●</span></span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="categories-header">
+    <div>
+      <span class="section-label">Browse By</span>
+      <h2 class="section-title">Shop Categories</h2>
+    </div>
+    <a href="products.html" class="btn-outline">View All</a>
+  </div>
+  <div class="cat-grid">
+    <a href="products.html?cat=living" class="cat-card">
+      <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500&q=80" alt="Living Room" />
+      <div class="cat-overlay">
+        <div class="cat-name">Living Room</div>
+        <div class="cat-count">86 items</div>
+      </div>
+      <div class="cat-arrow"><i class="fa fa-arrow-right"></i></div>
+    </a>
+    <a href="products.html?cat=kitchen" class="cat-card">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt="Kitchen" />
+      <div class="cat-overlay">
+        <div class="cat-name">Kitchen</div>
+        <div class="cat-count">124 items</div>
+      </div>
+      <div class="cat-arrow"><i class="fa fa-arrow-right"></i></div>
+    </a>
+    <a href="products.html?cat=bedroom" class="cat-card">
+      <img src="https://images.unsplash.com/photo-1540518614846-7eded433c457?w=500&q=80" alt="Bedroom" />
+      <div class="cat-overlay">
+        <div class="cat-name">Bedroom</div>
+        <div class="cat-count">67 items</div>
+      </div>
+      <div class="cat-arrow"><i class="fa fa-arrow-right"></i></div>
+    </a>
+    <a href="products.html?cat=decor" class="cat-card">
+      <img src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=500&q=80" alt="Decor" />
+      <div class="cat-overlay">
+        <div class="cat-name">Décor</div>
+        <div class="cat-count">201 items</div>
+      </div>
+      <div class="cat-arrow"><i class="fa fa-arrow-right"></i></div>
+    </a>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="featured">
+  <div class="feat-header">
+    <div>
+      <span class="section-label">Handpicked For You</span>
+      <h2 class="section-title">Featured Products</h2>
+    </div>
+    <a href="products.html" class="btn-outline">See All Products</a>
+  </div>
+  <div class="products-grid">
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80" alt="Walnut Side Table" />
+        <span class="product-badge">New</span>
+        <div class="product-actions">
+          <button class="pa-btn" onclick="addToCart(event,'Walnut Side Table')"><i class="fa fa-shopping-bag"></i> Add to Cart</button>
+          <button class="pa-icon"><i class="fa fa-heart"></i></button>
+        </div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <div class="product-name">Walnut Side Table</div>
+      <div class="product-sub">Solid walnut, hand-finished</div>
+      <div class="product-price">$289.00</div>
+    </a>
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=500&q=80" alt="Ceramic Vase Set" />
+        <div class="product-actions">
+          <button class="pa-btn" onclick="addToCart(event,'Ceramic Vase Set')"><i class="fa fa-shopping-bag"></i> Add to Cart</button>
+          <button class="pa-icon"><i class="fa fa-heart"></i></button>
+        </div>
+      </div>
+      <div class="stars">★★★★☆</div>
+      <div class="product-name">Ceramic Vase Set</div>
+      <div class="product-sub">Hand-thrown stoneware</div>
+      <div class="product-price"><span class="old">$120.00</span>$89.00</div>
+    </a>
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=500&q=80" alt="Linen Throw" />
+        <span class="product-badge" style="background:var(--gold)">Popular</span>
+        <div class="product-actions">
+          <button class="pa-btn" onclick="addToCart(event,'Linen Throw')"><i class="fa fa-shopping-bag"></i> Add to Cart</button>
+          <button class="pa-icon"><i class="fa fa-heart"></i></button>
+        </div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <div class="product-name">Belgian Linen Throw</div>
+      <div class="product-sub">100% natural linen</div>
+      <div class="product-price">$145.00</div>
+    </a>
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80" alt="Brass Candleholder" />
+        <div class="product-actions">
+          <button class="pa-btn" onclick="addToCart(event,'Brass Candleholder')"><i class="fa fa-shopping-bag"></i> Add to Cart</button>
+          <button class="pa-icon"><i class="fa fa-heart"></i></button>
+        </div>
+      </div>
+      <div class="stars">★★★★☆</div>
+      <div class="product-name">Brass Candleholder</div>
+      <div class="product-sub">Solid brass, antique finish</div>
+      <div class="product-price">$68.00</div>
+    </a>
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <div class="promo-left">
+    <span class="section-label">Limited Time</span>
+    <h2>Summer Sale — Up to 40% Off</h2>
+    <p>Refresh your home for the season. Our biggest sale of the year runs through July 31st. Use code at checkout.</p>
+    <a href="products.html" class="btn-primary"><span>Shop the Sale</span> <i class="fa fa-arrow-right"></i></a>
+  </div>
+  <div class="promo-right">
+    <img src="https://images.unsplash.com/photo-1567225557594-88d73e55f2cb?w=800&q=80" alt="Sale items" />
+    <div class="promo-code">Use Code <span>SUMMER40</span></div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <span class="section-label">What Customers Say</span>
+  <h2 class="section-title">Loved by Thousands</h2>
+  <p>Real stories from real customers who brought MAISON into their homes.</p>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The walnut table exceeded all expectations. The craftsmanship is extraordinary — you can feel the care in every joint and finish. Worth every penny."</p>
+      <div class="testi-author">
+        <img src="https://i.pravatar.cc/44?img=1" class="testi-avatar" alt="Sarah" />
+        <div><div class="testi-name">Sarah M.</div><div class="testi-role">Interior Designer, NYC</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Ordered the linen throw and three vases — they arrived beautifully packaged. The quality is exactly what you'd expect from a true artisan brand."</p>
+      <div class="testi-author">
+        <img src="https://i.pravatar.cc/44?img=5" class="testi-avatar" alt="James" />
+        <div><div class="testi-name">James K.</div><div class="testi-role">Architect, Chicago</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★☆</div>
+      <p class="testi-text">"MAISON has completely transformed my apartment. Every piece has a story and a soul. Fast shipping, lovely packaging, and wonderful customer service."</p>
+      <div class="testi-author">
+        <img src="https://i.pravatar.cc/44?img=9" class="testi-avatar" alt="Priya" />
+        <div><div class="testi-name">Priya R.</div><div class="testi-role">Stylist, London</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="newsletter-inner">
+    <span class="section-label">Stay In Touch</span>
+    <h2>Join the MAISON Circle</h2>
+    <p>Be the first to know about new arrivals, exclusive sales, and inspiration for thoughtful living.</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Your email address" />
+      <button class="btn-primary" style="border-left:none;"><span>Subscribe</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo">MAISON<span>.</span></a>
+      <p>Artisan home goods crafted with intention. We believe beautiful objects enrich daily life.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="products.html">All Products</a></li>
+        <li><a href="products.html?cat=new">New Arrivals</a></li>
+        <li><a href="products.html?cat=sale">Sale</a></li>
+        <li><a href="products.html?cat=bestsellers">Best Sellers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">Our Story</a></li>
+        <li><a href="about.html#crafts">Craftsmanship</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#">Shipping & Returns</a></li>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 MAISON. All rights reserved.</span>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-pinterest"></i></a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Item added to cart 🛍️</div>
+
+<script>
+  // Navbar scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Cart toast
+  function addToCart(e, name) {
+    e.preventDefault();
+    const toast = document.getElementById('toast');
+    toast.textContent = `"${name}" added to cart 🛍️`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  // Hamburger (basic mobile menu toggle)
+  document.getElementById('hamburger').addEventListener('click', () => {
+    const links = document.querySelector('.nav-links');
+    links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '70px'; links.style.left = '0'; links.style.right = '0';
+    links.style.background = 'var(--cream)';
+    links.style.padding = '1.5rem 2rem';
+    links.style.borderBottom = '1px solid var(--light-gray)';
+  });
+</script>
 </body>
 </html>
