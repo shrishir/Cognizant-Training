@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — MAISON</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .page-header { margin-top: 80px; background: var(--dark); color: white; padding: 4rem; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; }
+    .breadcrumb { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 0.5rem; }
+    .breadcrumb a { color: var(--gold); text-decoration: none; }
+
+    .cart-layout {
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 3rem; padding: 3rem 4rem 6rem; max-width: 1300px; margin: 0 auto;
+    }
+
+    .cart-table { width: 100%; border-collapse: collapse; }
+    .cart-table th {
+      text-align: left; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray);
+      border-bottom: 2px solid var(--light-gray); padding-bottom: 1rem;
+    }
+    .cart-table td { padding: 1.5rem 0; border-bottom: 1px solid var(--light-gray); vertical-align: middle; }
+    .cart-product { display: flex; gap: 1.2rem; align-items: center; }
+    .cart-img { width: 80px; height: 80px; object-fit: cover; background: var(--light-gray); flex-shrink: 0; }
+    .cart-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .cart-sub { font-size: 0.8rem; color: var(--warm-gray); }
+    .qty-control { display: flex; align-items: center; border: 1.5px solid var(--light-gray); width: fit-content; }
+    .qty-btn { width: 34px; height: 36px; background: none; border: none; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+    .qty-btn:hover { background: var(--light-gray); }
+    .qty-input { width: 42px; height: 36px; text-align: center; border: none; border-left: 1.5px solid var(--light-gray); border-right: 1.5px solid var(--light-gray); font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none; }
+    .cart-price { font-weight: 600; font-size: 1rem; }
+    .remove-btn { background: none; border: none; color: var(--warm-gray); cursor: pointer; font-size: 0.9rem; transition: color 0.2s; }
+    .remove-btn:hover { color: var(--accent); }
+
+    .cart-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; }
+    .coupon-form { display: flex; gap: 0; }
+    .coupon-form input {
+      padding: 0.75rem 1.2rem; border: 2px solid var(--dark); border-right: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+      background: white; outline: none; width: 200px;
+    }
+
+    /* ORDER SUMMARY */
+    .order-summary { background: var(--dark); color: white; padding: 2.5rem; align-self: flex-start; position: sticky; top: 100px; }
+    .summary-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; }
+    .summary-line {
+      display: flex; justify-content: space-between;
+      font-size: 0.9rem; padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+    }
+    .summary-line.total {
+      border-bottom: none; padding-top: 1.2rem; margin-top: 0.5rem;
+      font-size: 1.1rem; font-weight: 700; color: white;
+    }
+    .summary-note { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 1.5rem; text-align: center; }
+    .checkout-btn {
+      width: 100%; padding: 1rem; background: var(--gold); color: white;
+      border: none; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+      margin-bottom: 1rem;
+    }
+    .checkout-btn:hover { background: #b8851f; }
+    .paypal-btn {
+      width: 100%; padding: 0.9rem; background: #F7C948; color: #1A1A1A;
+      border: none; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+      margin-bottom: 1.5rem;
+    }
+    .paypal-btn:hover { opacity: 0.9; }
+    .secure-badges { display: flex; justify-content: center; gap: 1rem; }
+    .secure-badge { font-size: 0.75rem; color: rgba(255,255,255,0.35); display: flex; align-items: center; gap: 0.3rem; }
+
+    @media (max-width: 1000px) {
+      .cart-layout { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+    @media (max-width: 600px) {
+      .cart-layout { padding: 2rem 1.5rem 4rem; }
+      .page-header { padding: 3rem 1.5rem; }
+      .cart-table th:nth-child(3),
+      .cart-table td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">MAISON<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Shop</a></li>
+    <li><a href="product-detail.html">Products</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon"><i class="fa fa-search"></i></button>
+    <button class="nav-icon"><i class="fa fa-heart"></i></button>
+    <button class="nav-icon" onclick="window.location='cart.html'" style="color:var(--gold)">
+      <i class="fa fa-shopping-bag"></i><span class="cart-badge">3</span>
+    </button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="index.html">Home</a> / Cart</div>
+  <h1>Your Cart (3)</h1>
+</div>
+
+<div class="cart-layout">
+  <div>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="cart-product">
+              <img class="cart-img" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80" alt="Walnut Side Table" />
+              <div>
+                <div class="cart-name">Walnut Side Table</div>
+                <div class="cart-sub">22" Square · Dark Walnut</div>
+              </div>
+            </div>
+          </td>
+          <td class="cart-price">$289.00</td>
+          <td>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+              <input class="qty-input" type="number" value="1" min="1" />
+              <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+            </div>
+          </td>
+          <td class="cart-price">$289.00</td>
+          <td><button class="remove-btn"><i class="fa fa-times"></i></button></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="cart-product">
+              <img class="cart-img" src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=200&q=80" alt="Ceramic Vase Set" />
+              <div>
+                <div class="cart-name">Ceramic Vase Set</div>
+                <div class="cart-sub">Matte White · Set of 3</div>
+              </div>
+            </div>
+          </td>
+          <td class="cart-price">$89.00</td>
+          <td>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+              <input class="qty-input" type="number" value="2" min="1" />
+              <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+            </div>
+          </td>
+          <td class="cart-price">$178.00</td>
+          <td><button class="remove-btn"><i class="fa fa-times"></i></button></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="cart-product">
+              <img class="cart-img" src="https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=200&q=80" alt="Belgian Linen Throw" />
+              <div>
+                <div class="cart-name">Belgian Linen Throw</div>
+                <div class="cart-sub">Natural · 50"×70"</div>
+              </div>
+            </div>
+          </td>
+          <td class="cart-price">$145.00</td>
+          <td>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+              <input class="qty-input" type="number" value="1" min="1" />
+              <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+            </div>
+          </td>
+          <td class="cart-price">$145.00</td>
+          <td><button class="remove-btn"><i class="fa fa-times"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="cart-footer">
+      <div class="coupon-form">
+        <input type="text" placeholder="Coupon code (e.g. SUMMER40)" />
+        <button class="btn-primary" style="padding:0.75rem 1.4rem;"><span>Apply</span></button>
+      </div>
+      <a href="products.html" class="btn-outline"><i class="fa fa-arrow-left"></i> Continue Shopping</a>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="order-summary">
+    <div class="summary-title">Order Summary</div>
+    <div class="summary-line"><span>Subtotal (4 items)</span><span>$612.00</span></div>
+    <div class="summary-line"><span>Shipping</span><span style="color:#6B8F71;">Free</span></div>
+    <div class="summary-line"><span>Coupon Discount</span><span style="color:var(--gold);">−$0.00</span></div>
+    <div class="summary-line"><span>Tax (est. 8%)</span><span>$48.96</span></div>
+    <div class="summary-line total"><span>Total</span><span>$660.96</span></div>
+    <br />
+    <p class="summary-note">Free shipping on orders over $75 · 30-day returns</p>
+    <button class="checkout-btn" onclick="window.location='checkout.html'">Proceed to Checkout <i class="fa fa-arrow-right"></i></button>
+    <button class="paypal-btn">
+      <i class="fab fa-paypal"></i> Pay with PayPal
+    </button>
+    <div class="secure-badges">
+      <span class="secure-badge"><i class="fa fa-lock"></i> Secure</span>
+      <span class="secure-badge"><i class="fa fa-shield-alt"></i> Protected</span>
+      <span class="secure-badge"><i class="fab fa-cc-visa"></i> VISA</span>
+      <span class="secure-badge"><i class="fab fa-cc-mastercard"></i></span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><a href="index.html" class="nav-logo">MAISON<span>.</span></a><p>Artisan home goods crafted with intention.</p></div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="products.html">All Products</a></li><li><a href="#">New Arrivals</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Help</h4><ul><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 MAISON. All rights reserved.</span></div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  function changeQty(btn, dir) {
+    const row = btn.closest('tr');
+    const input = row.querySelector('.qty-input');
+    input.value = Math.max(1, parseInt(input.value) + dir);
+  }
+</script>
+</body>
+</html>
