@@ -1,26 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Vintage Camera - Details</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walnut Side Table — MAISON</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .detail-wrap {
+      margin-top: 80px;
+      padding: 4rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; max-width: 1300px; margin-left: auto; margin-right: auto;
+    }
+
+    /* GALLERY */
+    .gallery { }
+    .gallery-main {
+      position: relative; overflow: hidden;
+      background: var(--light-gray); margin-bottom: 1rem;
+    }
+    .gallery-main img {
+      width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
+      transition: transform 0.5s;
+    }
+    .gallery-main:hover img { transform: scale(1.03); }
+    .gallery-badge {
+      position: absolute; top: 1.5rem; left: 1.5rem;
+      background: var(--accent); color: white;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.35rem 0.8rem;
+    }
+    .gallery-thumbs { display: flex; gap: 0.75rem; }
+    .thumb {
+      width: 80px; height: 80px; object-fit: cover;
+      cursor: pointer; opacity: 0.6; transition: opacity 0.2s;
+      border: 2px solid transparent;
+    }
+    .thumb.active, .thumb:hover { opacity: 1; border-color: var(--dark); }
+
+    /* INFO */
+    .product-info { padding-top: 1rem; }
+    .info-breadcrumb { font-size: 0.8rem; color: var(--warm-gray); margin-bottom: 1.5rem; }
+    .info-breadcrumb a { color: var(--gold); text-decoration: none; }
+    .info-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+    .info-badge {
+      background: var(--light-gray);
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.3rem 0.8rem; color: var(--warm-gray);
+    }
+    .info-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3vw, 2.6rem); font-weight: 900;
+      line-height: 1.1; margin-bottom: 0.75rem;
+    }
+    .info-rating { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; }
+    .info-stars { color: var(--gold); font-size: 0.9rem; }
+    .info-rating span { font-size: 0.85rem; color: var(--warm-gray); }
+    .info-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700; color: var(--dark);
+      margin-bottom: 1.5rem;
+    }
+    .info-price .old { text-decoration: line-through; color: var(--warm-gray); font-size: 1.2rem; margin-right: 0.5rem; }
+    .info-desc { color: var(--warm-gray); line-height: 1.8; font-size: 0.95rem; margin-bottom: 2rem; }
+
+    /* OPTIONS */
+    .option-label {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .size-options { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .size-btn {
+      border: 1.5px solid var(--light-gray); background: white;
+      padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;
+      transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .size-btn.active, .size-btn:hover { border-color: var(--dark); background: var(--dark); color: white; }
+    .color-options { display: flex; gap: 0.6rem; margin-bottom: 2rem; }
+    .color-opt {
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      border: 2px solid transparent; transition: border-color 0.2s;
+    }
+    .color-opt.active, .color-opt:hover { border-color: var(--dark); }
+
+    /* QTY + CTA */
+    .add-to-cart-row { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .qty-control { display: flex; align-items: center; border: 2px solid var(--dark); }
+    .qty-btn {
+      width: 42px; height: 48px; background: none; border: none;
+      cursor: pointer; font-size: 1.1rem; transition: background 0.2s;
+    }
+    .qty-btn:hover { background: var(--light-gray); }
+    .qty-input {
+      width: 50px; height: 48px; text-align: center;
+      border: none; border-left: 2px solid var(--dark); border-right: 2px solid var(--dark);
+      font-size: 1rem; font-family: 'DM Sans', sans-serif; outline: none;
+    }
+    .btn-cart { flex: 1; min-width: 200px; justify-content: center; }
+    .btn-wish {
+      width: 50px; height: 50px; border: 2px solid var(--dark);
+      background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; transition: all 0.2s;
+    }
+    .btn-wish:hover { background: var(--dark); color: white; }
+
+    /* SPECS */
+    .product-specs { border-top: 1px solid var(--light-gray); padding-top: 1.5rem; margin-bottom: 1.5rem; }
+    .spec-row {
+      display: flex; justify-content: space-between;
+      padding: 0.6rem 0; border-bottom: 1px solid var(--light-gray);
+      font-size: 0.875rem;
+    }
+    .spec-key { color: var(--warm-gray); }
+    .spec-val { font-weight: 500; }
+
+    /* TABS */
+    .tabs-section { padding: 4rem; max-width: 1300px; margin: 0 auto; }
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--light-gray); margin-bottom: 2.5rem; }
+    .tab-btn {
+      padding: 0.8rem 2rem; background: none; border: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer; color: var(--warm-gray);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { color: var(--dark); border-bottom-color: var(--dark); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .tab-panel p { color: var(--warm-gray); line-height: 1.8; margin-bottom: 1rem; }
+
+    /* RELATED */
+    .related-section { padding: 2rem 4rem 6rem; max-width: 1300px; margin: 0 auto; }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 2rem;
+    }
+    .product-card { text-decoration: none; color: inherit; display: block; }
+    .product-img-wrap { position: relative; overflow: hidden; background: var(--light-gray); margin-bottom: 1rem; }
+    .product-img-wrap img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; transition: transform 0.5s; }
+    .product-card:hover .product-img-wrap img { transform: scale(1.05); }
+    .product-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .product-sub { font-size: 0.8rem; color: var(--warm-gray); margin-bottom: 0.4rem; }
+    .product-price { font-weight: 600; font-size: 0.95rem; }
+    .stars { color: var(--gold); font-size: 0.72rem; margin-bottom: 0.2rem; }
+
+    @media (max-width: 900px) {
+      .detail-wrap { grid-template-columns: 1fr; padding: 2rem; gap: 2rem; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .tabs-section, .related-section { padding: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .add-to-cart-row { flex-direction: column; align-items: stretch; }
+      .btn-cart { min-width: unset; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <nav><a href="products.html">&larr; Back to Products</a></nav>
-    </header>
 
-    <main>
-        <h1>Vintage Camera</h1>
-        <img src="https://via.placeholder.com/400" alt="Vintage Camera Large">
-        
-        <h3>Price: $150.00</h3>
-        <p><strong>Description:</strong> A beautifully restored 1970s film camera. Perfect for enthusiasts and collectors.</p>
-        
-        <form action="cart-mockup.html">
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="quantity" value="1" min="1">
-            <br><br>
-            <button type="submit">Add to Cart</button>
-        </form>
-    </main>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">MAISON<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Shop</a></li>
+    <li><a href="product-detail.html" class="active">Products</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon"><i class="fa fa-search"></i></button>
+    <button class="nav-icon"><i class="fa fa-heart"></i></button>
+    <button class="nav-icon" onclick="window.location='cart.html'">
+      <i class="fa fa-shopping-bag"></i><span class="cart-badge">3</span>
+    </button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="detail-wrap">
+  <!-- GALLERY -->
+  <div class="gallery">
+    <div class="gallery-main">
+      <img id="mainImg" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80" alt="Walnut Side Table" />
+      <span class="gallery-badge">New Arrival</span>
+    </div>
+    <div class="gallery-thumbs">
+      <img class="thumb active" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80" onclick="switchImg(this,'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80')" alt="view 1" />
+      <img class="thumb" src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=200&q=80" onclick="switchImg(this,'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=80')" alt="view 2" />
+      <img class="thumb" src="https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=200&q=80" onclick="switchImg(this,'https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=800&q=80')" alt="view 3" />
+      <img class="thumb" src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=200&q=80" onclick="switchImg(this,'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&q=80')" alt="view 4" />
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="product-info">
+    <div class="info-breadcrumb"><a href="index.html">Home</a> / <a href="products.html">Shop</a> / Walnut Side Table</div>
+    <div class="info-top">
+      <span class="info-badge">Living Room</span>
+    </div>
+    <h1 class="info-title">Walnut Side Table</h1>
+    <div class="info-rating">
+      <span class="info-stars">★★★★★</span>
+      <span>4.9 (128 reviews)</span>
+    </div>
+    <div class="info-price">$289.00</div>
+    <p class="info-desc">
+      Hand-crafted from sustainably harvested black walnut. Each table is unique, with natural grain variations
+      that make it truly one-of-a-kind. The tapered legs are mortise-and-tenon jointed for heirloom durability.
+      Finished with food-safe linseed oil.
+    </p>
+
+    <div class="option-label">Size</div>
+    <div class="size-options">
+      <button class="size-btn">18" Round</button>
+      <button class="size-btn active">22" Square</button>
+      <button class="size-btn">26" Rectangle</button>
+    </div>
+
+    <div class="option-label">Finish</div>
+    <div class="color-options">
+      <div class="color-opt active" style="background:#4A3728;" title="Dark Walnut"></div>
+      <div class="color-opt" style="background:#8B6914;" title="Honey Oak"></div>
+      <div class="color-opt" style="background:#F5F0E8; border:1.5px solid #ccc;" title="Natural"></div>
+      <div class="color-opt" style="background:#1A1410;" title="Ebonized"></div>
+    </div>
+
+    <div class="add-to-cart-row">
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <input class="qty-input" type="number" value="1" min="1" max="10" id="qty" />
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <button class="btn-primary btn-cart" onclick="showToast()"><span>Add to Cart</span> <i class="fa fa-shopping-bag"></i></button>
+      <button class="btn-wish"><i class="fa fa-heart"></i></button>
+    </div>
+
+    <div class="product-specs">
+      <div class="spec-row"><span class="spec-key">Dimensions</span><span class="spec-val">22" W × 22" D × 24" H</span></div>
+      <div class="spec-row"><span class="spec-key">Material</span><span class="spec-val">Solid Black Walnut</span></div>
+      <div class="spec-row"><span class="spec-key">Finish</span><span class="spec-val">Linseed Oil</span></div>
+      <div class="spec-row"><span class="spec-key">Weight</span><span class="spec-val">14 lbs</span></div>
+      <div class="spec-row"><span class="spec-key">Ships In</span><span class="spec-val">3–5 Business Days</span></div>
+      <div class="spec-row"><span class="spec-key">Warranty</span><span class="spec-val">Lifetime Craftsmanship</span></div>
+    </div>
+
+    <div style="display:flex; gap:2rem; font-size:0.82rem; color:var(--warm-gray);">
+      <span><i class="fa fa-truck" style="margin-right:.4rem;color:var(--gold)"></i> Free shipping over $75</span>
+      <span><i class="fa fa-undo" style="margin-right:.4rem;color:var(--gold)"></i> 30-day returns</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-section">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'desc')">Description</button>
+    <button class="tab-btn" onclick="switchTab(this,'care')">Care & Materials</button>
+    <button class="tab-btn" onclick="switchTab(this,'reviews')">Reviews (128)</button>
+    <button class="tab-btn" onclick="switchTab(this,'ship')">Shipping</button>
+  </div>
+  <div class="tab-panel active" id="tab-desc">
+    <p>The Walnut Side Table is a celebration of material honesty. We start with slabs of sustainably-harvested black walnut from small family-run mills in the American Midwest, where the wood is air-dried for a minimum of two years before entering our workshop.</p>
+    <p>Each table is shaped by hand using traditional joinery — no dowels, no hidden hardware. The tapered legs are mortise-and-tenon connected to the top, creating a bond that strengthens with age. The final surface is sanded through eight grits and hand-rubbed with pure linseed oil, letting the walnut's natural lustre speak for itself.</p>
+    <p>Because we use natural wood, each table's grain pattern is completely unique. Slight variations in color and figure are a mark of authenticity, not a defect.</p>
+  </div>
+  <div class="tab-panel" id="tab-care">
+    <p><strong>Cleaning:</strong> Wipe with a slightly damp cloth and dry immediately. Avoid harsh chemicals, solvents, or abrasive cleaners.</p>
+    <p><strong>Conditioning:</strong> Re-oil every 6–12 months with pure linseed or walnut oil to maintain the finish and protect the wood.</p>
+    <p><strong>Environment:</strong> Keep away from direct sunlight and heating vents. Wood naturally expands and contracts with humidity — this is normal.</p>
+    <p><strong>Material:</strong> 100% solid black walnut. No plywood, MDF, or veneers. Hardware-free joinery.</p>
+  </div>
+  <div class="tab-panel" id="tab-reviews">
+    <div style="display:flex; gap:2rem; margin-bottom:2rem; align-items:center;">
+      <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif; font-size:4rem; font-weight:900; line-height:1;">4.9</div>
+        <div style="color:var(--gold); font-size:1.2rem; margin-bottom:0.3rem;">★★★★★</div>
+        <div style="font-size:0.8rem; color:var(--warm-gray);">128 reviews</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:1.5rem;">
+      <div style="border-bottom:1px solid var(--light-gray); padding-bottom:1.5rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+          <strong>Sarah M.</strong><span style="color:var(--gold); font-size:0.85rem;">★★★★★</span>
+        </div>
+        <p style="color:var(--warm-gray); font-size:0.9rem; line-height:1.7; font-style:italic;">"Absolutely beautiful table. The grain is stunning and the quality is so evident. It's already become the centerpiece of my living room."</p>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+          <strong>James K.</strong><span style="color:var(--gold); font-size:0.85rem;">★★★★★</span>
+        </div>
+        <p style="color:var(--warm-gray); font-size:0.9rem; line-height:1.7; font-style:italic;">"Worth every cent. Heavy, solid, beautiful. You can feel this is built to last a lifetime. The oil finish is perfect."</p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="tab-ship">
+    <p><strong>Standard Shipping (Free over $75):</strong> 3–5 business days via UPS or FedEx. Tracking provided via email.</p>
+    <p><strong>Expedited Shipping:</strong> 1–2 business days. Additional fee at checkout.</p>
+    <p><strong>International:</strong> We ship to 40+ countries. Duties and taxes may apply at destination.</p>
+    <p><strong>Returns:</strong> We offer free returns within 30 days of delivery. Items must be in original condition.</p>
+  </div>
+</div>
+
+<!-- RELATED -->
+<div class="related-section">
+  <span class="section-label">You Might Also Like</span>
+  <h2 class="section-title">Related Products</h2>
+  <div class="products-grid">
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap"><img src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&q=80" alt="Ceramic Vase Set" /></div>
+      <div class="stars">★★★★☆</div>
+      <div class="product-name">Ceramic Vase Set</div>
+      <div class="product-sub">Hand-thrown stoneware</div>
+      <div class="product-price">$89.00</div>
+    </a>
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap"><img src="https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=400&q=80" alt="Linen Throw" /></div>
+      <div class="stars">★★★★★</div>
+      <div class="product-name">Belgian Linen Throw</div>
+      <div class="product-sub">100% natural linen</div>
+      <div class="product-price">$145.00</div>
+    </a>
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap"><img src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400&q=80" alt="Brass Candleholder" /></div>
+      <div class="stars">★★★★☆</div>
+      <div class="product-name">Brass Candleholder</div>
+      <div class="product-sub">Solid brass, antique finish</div>
+      <div class="product-price">$68.00</div>
+    </a>
+    <a href="product-detail.html" class="product-card">
+      <div class="product-img-wrap"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80" alt="Rattan Basket" /></div>
+      <div class="stars">★★★★★</div>
+      <div class="product-name">Rattan Storage Basket</div>
+      <div class="product-sub">Hand-woven natural rattan</div>
+      <div class="product-price">$52.00</div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo">MAISON<span>.</span></a>
+      <p>Artisan home goods crafted with intention.</p>
+    </div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="products.html">All Products</a></li><li><a href="#">New Arrivals</a></li><li><a href="#">Sale</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Help</h4><ul><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 MAISON. All rights reserved.</span>
+    <div class="social-links"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-pinterest"></i></a></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  function switchImg(el, src) {
+    document.getElementById('mainImg').src = src;
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function changeQty(d) {
+    const q = document.getElementById('qty');
+    q.value = Math.max(1, Math.min(10, parseInt(q.value) + d));
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.textContent = '"Walnut Side Table" added to cart 🛍️';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  document.querySelectorAll('.size-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.size-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.color-opt').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.color-opt').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+</script>
 </body>
 </html>
